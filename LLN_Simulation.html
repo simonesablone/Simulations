@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Law of Large Numbers</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div style="width:80%; margin:auto;">
+    <h2>Law of Large Numbers Simulation</h2>
+    <label for="populationDimension">Population Dimension:</label>
+    <input type="number" id="populationDimension" value="1000" oninput="updateChart()">
+    <label for="sampleSize">Number of Samples:</label>
+    <input type="number" id="sampleSize" value="10" oninput="updateChart()">
+    <canvas id="myChart"></canvas>
+</div>
+
+<script>
+    // Initial values
+    var populationDimension = 1000;
+    var sampleSize = 10;
+
+    // Generate random population with normal distribution (mean = 50, std deviation = 10)
+    var population = Array.from({ length: populationDimension }, () => Math.round(Math.random() * 20 + 40));
+
+    // Initialize arrays for x and y axes
+    var xValues = [];
+    var yValues = [];
+    var populationMean = Array(sampleSize).fill(population.reduce((a, b) => a + b, 0) / populationDimension);
+
+    // Function to update the chart
+    function updateChart() {
+        // Get user inputs
+        populationDimension = parseInt(document.getElementById('populationDimension').value);
+        sampleSize = parseInt(document.getElementById('sampleSize').value);
+
+        // Generate random population with normal distribution (mean = 50, std deviation = 10)
+        population = Array.from({ length: populationDimension }, () => Math.round(Math.random() * 20 + 40));
+
+        // Reset arrays
+        xValues = [];
+        yValues = [];
+        populationMean = Array(sampleSize).fill(population.reduce((a, b) => a + b, 0) / populationDimension);
+
+        // Calculate sample means for increasing sample sizes
+        for (var i = 1; i <= sampleSize; i++) {
+            var sample = population.slice(0, i);
+            var sampleMean = sample.reduce((a, b) => a + b, 0) / i;
+            xValues.push(i);
+            yValues.push(sampleMean);
+        }
+
+        // Update the chart
+        myChart.data.labels = xValues;
+        myChart.data.datasets[0].data = yValues;
+        myChart.data.datasets[1].data = populationMean;
+        myChart.update();
+    }
+
+    // Initial chart creation
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: xValues,
+            datasets: [{
+                label: 'Sample Mean',
+                data: yValues,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Population Mean',
+                data: populationMean,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                fill: false,
+                borderDash: [5, 5] // Dashed line
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom'
+                },
+                y: {
+                    min: 40,
+                    max: 60
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
