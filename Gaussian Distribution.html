@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Normal Distribution Graphs</title>
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div style="display: flex; justify-content: space-around;">
+        <div>
+            <h2>Standard Normal Distribution</h2>
+            <canvas id="standardNormalCanvas" width="400" height="200"></canvas>
+        </div>
+
+        <div>
+            <h2>General Normal Distribution</h2>
+            <canvas id="generalNormalCanvas" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Function to calculate the probability density function (PDF) for the standard normal distribution
+        function standardNormalPDF(x) {
+            return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+        }
+
+        // Function to generate data for the standard normal distribution
+        function generateStandardNormalData() {
+            const data = [];
+            for (let x = -3; x <= 3; x += 0.1) {
+                data.push({ x, y: standardNormalPDF(x) });
+            }
+            return data;
+        }
+
+        // Function to generate data for a general normal distribution
+        function generateGeneralNormalData(mean, stdDev) {
+            const data = [];
+            for (let x = mean - 3 * stdDev; x <= mean + 3 * stdDev; x += 0.1) {
+                const exponent = -0.5 * ((x - mean) / stdDev) ** 2;
+                data.push({ x, y: (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(exponent) });
+            }
+            return data;
+        }
+
+        // Get canvas elements
+        const standardNormalCanvas = document.getElementById('standardNormalCanvas').getContext('2d');
+        const generalNormalCanvas = document.getElementById('generalNormalCanvas').getContext('2d');
+
+        // Draw standard normal distribution graph
+        new Chart(standardNormalCanvas, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: 'Standard Normal Distribution',
+                    borderColor: 'blue',
+                    data: generateStandardNormalData(),
+                }],
+            },
+            options: {
+                scales: {
+                    x: { type: 'linear', position: 'bottom' },
+                    y: { type: 'linear', position: 'left' },
+                },
+            },
+        });
+
+        // Draw general normal distribution graph with different mean and variance
+        new Chart(generalNormalCanvas, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: 'General Normal Distribution',
+                    borderColor: 'green',
+                    data: generateGeneralNormalData(1, 0.5), // Mean = 1, Standard Deviation = 0.5
+                }],
+            },
+            options: {
+                scales: {
+                    x: { type: 'linear', position: 'bottom' },
+                    y: { type: 'linear', position: 'left' },
+                },
+            },
+        });
+    </script>
+</body>
+</html>
+
+
+
