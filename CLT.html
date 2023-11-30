@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central Limit Theorem Simulation</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+
+<div>
+    <label for="populationSize">Population Size:</label>
+    <input type="number" id="populationSize" value="1000">
+
+    <label for="sampleSize">Sample Size:</label>
+    <input type="number" id="sampleSize" value="30">
+
+    <label for="numSamples">Number of Samples:</label>
+    <input type="number" id="numSamples" value="1000">
+
+    <button onclick="updateChart()">Update Chart</button>
+</div>
+
+<div id="myChart"></div>
+
+<script>
+    // Function to generate a random sample from a normal distribution
+    function generateRandomSample(size, mean, stdDev) {
+        return Array.from({ length: size }, () => mean + stdDev * Math.random());
+    }
+
+    function updateChart() {
+        const populationSize = parseInt(document.getElementById('populationSize').value);
+        const sampleSize = parseInt(document.getElementById('sampleSize').value);
+        const numSamples = parseInt(document.getElementById('numSamples').value);
+
+        const sampleMeans = [];
+
+        for (let i = 0; i < numSamples; i++) {
+            const sample = generateRandomSample(sampleSize, populationSize / 2, populationSize / 4);
+            const mean = sample.reduce((acc, val) => acc + val, 0) / sampleSize;
+            sampleMeans.push(mean);
+        }
+
+        const chartData = [{
+            x: sampleMeans,
+            type: 'histogram',
+            marker: {
+                color: 'rgba(75, 192, 192, 0.7)'
+            }
+        }];
+
+        const layout = {
+            title: 'Central Limit Theorem Simulation',
+            xaxis: {
+                title: 'Sample Mean'
+            },
+            yaxis: {
+                title: 'Frequency'
+            }
+        };
+
+        Plotly.newPlot('myChart', chartData, layout);
+    }
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
