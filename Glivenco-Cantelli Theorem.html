@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glivenko-Cantelli Theorem Simulation</title>
+  <!-- Include Chart.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    canvas {
+      margin-right: 20px; /* Adjust margin as needed */
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myChart" width="300" height="200"></canvas>
+
+  <script>
+    // Function to generate random data points for the empirical distribution
+    function generateDataPoints(sampleSize) {
+      const data = [];
+      for (let i = 0; i < sampleSize; i++) {
+        data.push(Math.random());
+      }
+      return data.sort((a, b) => a - b);
+    }
+
+    // Function to calculate the empirical distribution function
+    function calculateEmpiricalDistribution(data) {
+      const n = data.length;
+      let cumulativeFrequency = 0;
+
+      return data.map((value, index) => {
+        cumulativeFrequency += 1 / n;
+        return { x: value, y: cumulativeFrequency };
+      });
+    }
+
+    // Function to plot the simulation
+    function plotSimulation(sampleSize) {
+      const dataPoints = generateDataPoints(sampleSize);
+      const empiricalDistribution = calculateEmpiricalDistribution(dataPoints);
+
+      const ctx = document.getElementById('myChart').getContext('2d');
+      const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          datasets: [{
+            label: 'Empirical Distribution Function',
+            data: empiricalDistribution,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2,
+            fill: false,
+          }],
+        },
+        options: {
+          scales: {
+            x: {
+              type: 'linear',
+              position: 'bottom',
+            },
+            y: {
+              type: 'linear',
+              position: 'left',
+              min: 0,
+              max: 1,
+            },
+          },
+        },
+      });
+    }
+
+    // Initial simulation with a sample size of 100
+    plotSimulation(100);
+  </script>
+</body>
+</html>
+
