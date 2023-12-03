@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Wiener and GBM Process Simulation</title>
+</head>
+<body>
+
+<div id="wiener-process-plot" style="width: 60%; height: 500px; display: inline-block;"></div>
+<div id="gbm-process-plot" style="width: 60%; height: 500px; display: inline-block;"></div>
+
+<script>
+// Function to simulate Wiener process
+function simulateWienerProcess(steps) {
+    let dt = 1 / steps;
+    let t = Array.from({ length: steps + 1 }, (_, i) => i * dt);
+    let w = [0];
+
+    for (let i = 1; i <= steps; i++) {
+        w[i] = w[i - 1] + Math.sqrt(dt) * (Math.random() - 0.5) * 2;
+    }
+
+    return { t, w };
+}
+
+// Function to simulate Geometric Brownian Motion (GBM)
+function simulateGBM(steps, mu, sigma, S0) {
+    let dt = 1 / steps;
+    let t = Array.from({ length: steps + 1 }, (_, i) => i * dt);
+    let S = [S0];
+
+    for (let i = 1; i <= steps; i++) {
+        S[i] = S[i - 1] * Math.exp((mu - 0.5 * sigma**2) * dt + sigma * Math.sqrt(dt) * (Math.random() - 0.5) * 2);
+    }
+
+    return { t, S };
+}
+
+// Number of simulation steps
+const steps = 1000;
+
+// Simulate Wiener process
+const { t: wienerT, w: wienerW } = simulateWienerProcess(steps);
+
+// Create a trace for the Wiener process
+const wienerTrace = {
+    x: wienerT,
+    y: wienerW,
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Wiener Process',
+};
+
+// Layout configuration for Wiener process plot
+const wienerLayout = {
+    title: 'Wiener Process Simulation',
+    xaxis: { title: 'Time' },
+    yaxis: { title: 'Wiener Process Value' },
+    width: 600,
+    height: 500,
+};
+
+// Plot the Wiener process
+Plotly.newPlot('wiener-process-plot', [wienerTrace], wienerLayout);
+
+// Parameters for GBM simulation
+const mu = 0.1; // Drift
+const sigma = 0.2; // Volatility
+const S0 = 100; // Initial value
+
+// Simulate GBM
+const { t: gbmT, S: gbmS } = simulateGBM(steps, mu, sigma, S0);
+
+// Create a trace for GBM
+const gbmTrace = {
+    x: gbmT,
+    y: gbmS,
+    type: 'scatter',
+    mode: 'lines',
+    name: 'GBM',
+};
+
+// Layout configuration for GBM plot
+const gbmLayout = {
+    title: 'Geometric Brownian Motion (GBM) Simulation',
+    xaxis: { title: 'Time' },
+    yaxis: { title: 'GBM Value' },
+    width: 600,
+    height: 500,
+};
+
+// Plot GBM
+Plotly.newPlot('gbm-process-plot', [gbmTrace], gbmLayout);
+</script>
+
+</body>
+</html>
+
+
