@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donsker's Invariance Principle</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div style="width: 80%; margin: auto;">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+        // Function to simulate a random walk on Z
+        function simulateRandomWalk(n) {
+            const steps = [0];
+            let currentStep = 0;
+
+            for (let i = 1; i <= n; i++) {
+                // Randomly move either up or down
+                const step = Math.random() < 0.5 ? -1 : 1;
+                currentStep += step;
+                steps.push(currentStep);
+            }
+
+            return steps;
+        }
+
+        // Function to normalize the random walk to converge to a standard Brownian motion
+        function normalizeRandomWalk(steps) {
+            const normalizedSteps = steps.map(step => step / Math.sqrt(steps.length));
+            return normalizedSteps;
+        }
+
+        // Set the number of steps for the random walk
+        const n = 1000;
+
+        // Simulate a random walk
+        const randomWalk = simulateRandomWalk(n);
+
+        // Normalize the random walk for convergence
+        const normalizedWalk = normalizeRandomWalk(randomWalk);
+
+        // Chart configuration
+        const config = {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: n + 1 }, (_, i) => i),
+                datasets: [{
+                    label: 'Random Walk on Z',
+                    data: randomWalk,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 2,
+                    pointRadius: 0
+                }, {
+                    label: "Normalized Random Walk (Converging to Brownian Motion)",
+                    data: normalizedWalk,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 2,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom'
+                    },
+                    y: {
+                        type: 'linear',
+                        position: 'left'
+                    }
+                }
+            }
+        };
+
+        // Create a chart
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, config);
+    </script>
+</body>
+</html>
